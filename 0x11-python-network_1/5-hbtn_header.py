@@ -8,7 +8,17 @@ if __name__ == "__main__":
         sys.exit(1)
 
     url = sys.argv[1]
-    response = requests.get(url)
-    x_request_id = response.headers.get('X-Request-Id')
+    
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Check for HTTP errors
 
-    print(x_request_id)
+        x_request_id = response.headers.get('X-Request-Id')
+        if x_request_id:
+            print(x_request_id)
+        else:
+            print("No X-Request-Id found in the response headers.")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+        sys.exit(1)
